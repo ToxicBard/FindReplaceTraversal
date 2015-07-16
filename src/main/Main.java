@@ -13,7 +13,7 @@ public class Main {
 	
 	private static BufferedWriter mOutputWriter;
 	private static final ReplaceTypes mReplacementType = ReplaceTypes.Both;
-	private static final boolean mWriteChanges = true;
+	private static final boolean mWriteChanges = false;
 	private static final String mFindToken = " ";
 	private static final String mReplaceToken = "_";
 	
