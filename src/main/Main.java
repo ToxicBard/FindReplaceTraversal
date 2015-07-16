@@ -45,16 +45,16 @@ public class Main {
 				switch(lReplacementType){
 					case File:
 						if(loopFile.isFile()){
-							RenameFile(loopFile, lFindToken, lReplaceToken, lWriteChanges);
+							loopFile = RenameFile(loopFile, lFindToken, lReplaceToken, lWriteChanges);
 						}
 						break;
 					case Folder:
 						if(loopFile.isDirectory()){
-							RenameFile(loopFile, lFindToken, lReplaceToken, lWriteChanges);
+							loopFile = RenameFile(loopFile, lFindToken, lReplaceToken, lWriteChanges);
 						}
 						break;
 					case Both:
-						RenameFile(loopFile, lFindToken, lReplaceToken, lWriteChanges);
+						loopFile = RenameFile(loopFile, lFindToken, lReplaceToken, lWriteChanges);
 						break;
 				}
 			}
@@ -69,20 +69,30 @@ public class Main {
 		}
 	}
 	
-	private static void RenameFile(File lRenameFile, String lFindToken, String lReplaceToken, boolean lWriteChanges) throws IOException{
+	private static File RenameFile(File lRenameFile, String lFindToken, String lReplaceToken, boolean lWriteChanges) throws IOException{
 		String newName = lRenameFile.getName().replace(lFindToken, lReplaceToken);
 		String output = lRenameFile.getName() + ", " + newName;
-		File newFile = new File(lRenameFile.getParent() + "\\" + newName);
+		File newFile = new File(lRenameFile.getParent(), newName);
 		
 		System.out.println(output);
 		mOutputWriter.write(output + "\n");
 		
 		if(lWriteChanges){
-			if(lRenameFile.renameTo(newFile) == false){
+			if(lRenameFile.renameTo(newFile)){
+				//If the file was successfully renamed, then return it so that we can traverse through
+				//its files
+				return newFile;
+			}
+			else {
+				//I'm considering this an error condition
 				System.out.println("Rename failed");
 				mOutputWriter.write("Rename failed" + "\n");
+				return null;
 			}
 		}
+		
+		//If not in WriteChanges mode, then return the file that was passed in, because nothing changed
+		return lRenameFile;
 		
 	}
 
